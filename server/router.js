@@ -34,9 +34,9 @@ const router = (app) => {
   // When someone POSTS to /updateLast, call controllers.updateLast
   app.post('/updateLast', controllers.updateLast);
 
-  //Adding a Dog
+  // Adding a Dog
   app.post('/addDog', controllers.addDog);
-  //Update a dog's age
+  // Update a dog's age
   app.post('/increaseDogAge', controllers.incDogAge);
 };
 

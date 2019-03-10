@@ -116,9 +116,9 @@ const hostPage3 = (req, res) => {
 const hostPage4 = (req, res) => {
   Dog.readAllDogs((err, doc) => {
     if (err) { return res.json({ err }); }
-    res.render('page4', { dogs: doc });
+    return res.render('page4', { dogs: doc });
   });
-}
+};
 
 // function to handle get request to send the name
 // controller functions in Express receive the full HTTP request
@@ -169,7 +169,7 @@ const setName = (req, res) => {
   });
 
   // if error, return it
-  savePromise.catch((err) => res.json({ err }));
+  savePromise.catch(err => res.json({ err }));
 
   return res;
 };
@@ -237,27 +237,27 @@ const updateLast = (req, res) => {
   savePromise.then(() => res.json({ name: lastAdded.name, beds: lastAdded.bedsOwned }));
 
   // if save error, just return an error for now
-  savePromise.catch((err) => res.json({ err }));
+  savePromise.catch(err => res.json({ err }));
 };
 
 const addDog = (req, res) => {
   if (!req.body.name || !req.body.breed || !req.body.age) {
     return res.status(400).json({ error: 'name, breed, and age are all required' });
   }
-  //Build the dog's data structure
+  // Build the dog's data structure
   const newDogData = {
     name: req.body.name,
     breed: req.body.breed,
-    age: req.body.age
+    age: req.body.age,
   };
-  //Create the dog
+  // Create the dog
   const newDog = new Dog(newDogData);
-  //Save the dog, then return success or error
+  // Save the dog, then return success or error
   newDog.save().then(() => {
     res.json(newDogData);
   }).catch(err => res.json({ err }));
   return res;
-}
+};
 
 const incDogAge = (req, res) => {
   if (!req.body.name || !req.body.years) {
@@ -265,14 +265,15 @@ const incDogAge = (req, res) => {
   }
 
   return Dog.findByName(req.body.name, (err, doc) => {
-    if (err) { return res.json({ err }) }
-    if (!doc) { return res.json({ error: "No dog found with that name" }) }
-    doc.age += Number(req.body.years);
-    doc.save().then(() => {
-      res.json({ name: doc.name, breed: doc.breed, age: doc.age });
-    }).catch((err) => res.json({ err }));
+    if (err) { return res.json({ err }); }
+    if (!doc) { return res.json({ error: 'No dog found with that name' }); }
+    return doc.update({ $inc: { age: Number(req.body.years) } }, { w: 1 })
+      .then(() => doc.save()
+        .then(() => res.json({ name: doc.name, breed: doc.breed, age: doc.age }))
+        .catch(e => res.json({ e })))
+      .catch(e => res.json({ e }));
   });
-}
+};
 
 // function to handle a request to any non-real resources (404)
 // controller functions in Express receive the full HTTP request

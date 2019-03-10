@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 mongoose.Promise = global.Promise;
 
 let DogModel = {};
@@ -12,11 +13,11 @@ const DogSchema = new mongoose.Schema({
   },
   breed: {
     type: String,
-    trim: true
+    trim: true,
   },
   age: {
     type: Number,
-    min: 0
+    min: 0,
   },
   createdDate: {
     type: Date,
@@ -24,12 +25,8 @@ const DogSchema = new mongoose.Schema({
   },
 });
 
-DogSchema.statics.findByName = (name, callback) => {
-  return DogModel.findOne({ name, }, callback);
-}
-DogSchema.statics.readAllDogs = (callback) => {
-  return DogModel.find(callback);
-}
+DogSchema.statics.findByName = (name, callback) => DogModel.findOne({ name }, callback);
+DogSchema.statics.readAllDogs = callback => DogModel.find(callback);
 
 DogModel = mongoose.model('Dog', DogSchema);
 
