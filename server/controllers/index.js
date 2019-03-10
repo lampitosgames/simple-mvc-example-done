@@ -116,7 +116,7 @@ const hostPage3 = (req, res) => {
 const hostPage4 = (req, res) => {
   Dog.readAllDogs((err, doc) => {
     if (err) { return res.json({ err }); }
-    return res.render('page4', { dogs: doc });
+    return res.render('page4', { title: 'Page 4', pageName: 'Page 4', dogs: doc });
   });
 };
 
